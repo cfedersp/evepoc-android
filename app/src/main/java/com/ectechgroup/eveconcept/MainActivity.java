@@ -2,26 +2,20 @@ package com.ectechgroup.eveconcept;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ectechgroup.eveconcept.services.DownloadIntentService;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getCanonicalName();
@@ -89,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         EveLocale localData = new EveLocale();
         localData.setEstablishmentId(jsonObj.getString("establishmentId"));
         localData.setEstablishmentName(jsonObj.getString("establishmentName"));
-        localData.setServiceEndpoint(jsonObj.getString("serviceEndpoint"));
+        localData.setNetworkId(jsonObj.getString("gatewayId"));
+        //localData.setServiceEndpoint(jsonObj.getString("serviceEndpoint"));
         return localData;
 
     }
@@ -100,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 if (resultCode == 200) {
                     EveLocale localData = loadData(data.getStringExtra("json"));
+                    EveDatabaseHelper helper = EveDatabaseHelper.getInstance(this);
+                    helper.insertVisit(localData);
                     Snackbar.make(findViewById(R.id.hellotext), "Accessed locale service: " + localData.getEstablishmentName(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
                 } else if(resultCode == 404) {
