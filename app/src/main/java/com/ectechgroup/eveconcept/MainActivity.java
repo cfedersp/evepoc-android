@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         EveLocale localData = new EveLocale();
         localData.setEstablishmentId(jsonObj.getString("establishmentId"));
         localData.setEstablishmentName(jsonObj.getString("establishmentName"));
-
+        localData.setServiceEndpoint(jsonObj.getString("serviceEndpoint"));
         return localData;
 
     }
